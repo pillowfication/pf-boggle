@@ -1,0 +1,34 @@
+{
+  "name": "pf-boggle",
+  "version": "1.0.0",
+  "description": "NxN Boggle generator and solver",
+  "author": {
+    "name": "Markus Tran",
+    "email": "thebluepillow@gmail.com",
+    "url": "http://pillowfication.com"
+  },
+  "homepage": "https://github.com/pillowfication/pf-boggle",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/pillowfication/pf-boggle.git"
+  },
+  "bugs": {
+    "url": "https://github.com/pillowfication/pf-boggle/issues"
+  },
+  "main": "index.js",
+  "scripts": {
+    "build": "browserify examples/example.js -o examples/bundle.js"
+  },
+  "dependencies": {
+    "pf-sowpods": "1.0.3"
+  },
+  "devDependencies": {
+    "eslint-config-pf": "*",
+    "jquery": "2.1.x"
+  },
+  "keywords": [
+    "pillow",
+    "boggle"
+  ],
+  "license": "MIT"
+}
