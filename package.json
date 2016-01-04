@@ -20,7 +20,7 @@
     "build": "browserify examples/example.js -o examples/bundle.js"
   },
   "dependencies": {
-    "pf-sowpods": "1.0.3"
+    "pf-sowpods": "1.0.5"
   },
   "devDependencies": {
     "eslint-config-pf": "*",
