@@ -1,6 +1,6 @@
 {
   "name": "pf-boggle",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "NxN Boggle generator and solver",
   "author": {
     "name": "Markus Tran",
