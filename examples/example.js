@@ -6,15 +6,14 @@ var boggle = require('..');
 $(function() {
   var board, solution, size, time, timer, words, points;
 
-  // Convert char to dice face
-  function stringy(char) {
-    var str = boggle.charMap(char);
-    return str.charAt(0) + str.slice(1).toLowerCase();
+  // Format time
+  function getTime(n) {
+    return (n/60|0)+':'+('00'+n%60).slice(-2);
   }
 
-  // Zero-pad numbers
-  function pad(num) {
-    return ('00'+num).slice(-2);
+  // Lowercase string
+  function stringy(str) {
+    return str.charAt(0) + str.slice(1).toLowerCase();
   }
 
   // Validate word is on board and not already used
@@ -36,7 +35,7 @@ $(function() {
     size = +$('input[name=size]:checked').val();
     time = +$('input[name=time]').val();
     board = boggle.generate(size);
-    solution = boggle.solve(board, size).sort(function(a, b) {
+    solution = boggle.solve(board).sort(function(a, b) {
       return a.word.localeCompare(b.word);
     });
     words = [];
@@ -64,15 +63,14 @@ $(function() {
 
     // Start timer
     $('#timer')[0].className = time <= 0 ? 'warn' : '';
-    $('#timer').html((time/60|0)+':'+pad(time%60));
+    $('#timer').html(getTime(time));
     clearInterval(timer);
     timer = setInterval(function() {
-      --time;
-      if (time <= 0) {
+      if (--time <= 0) {
         $('#timer').addClass('warn');
         clearInterval(timer);
       }
-      $('#timer').html((time/60|0)+':'+pad(time%60));
+      $('#timer').html(getTime(time));
     }, 1000);
   });
 
@@ -82,9 +80,9 @@ $(function() {
   });
 
   // Handle game input
-  $('input[name=input]').keydown(function(e) {
+  $('input[name=input]').keydown(function(event) {
     var $this = $(this), word = $this.val().toUpperCase(), point = boggle.points(word, size);
-    if (e.keyCode === 13) {
+    if (event.keyCode === 13) {
       if (verify(word)) {
         // Update score
         words.push(word);

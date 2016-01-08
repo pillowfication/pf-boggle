@@ -8,9 +8,6 @@
 // Require the module to use it.
 var boggle = require('pf-boggle');
 
-// Create a 4x4 board using the Classic Boggle dice
-var newBoggle = boggle.generate(4, boggle.dice['classic4']);
-
 // Create a 5x5 board
 var board = boggle.generate(5);
 // [ 'E', 'O', 'T', 'I', 'I',
@@ -31,7 +28,7 @@ var solution = boggle.solve(board, 5);
 
 // Find maximum score
 // Sort solutions
-var solution = solution.sort(function(a, b) {
+solution = solution.sort(function(a, b) {
   return a.word.localeCompare(b.word);
 });
 // Remove duplicates
@@ -61,22 +58,33 @@ npm run build
  * **dice** (Array) - *Optional*. An array of dice to use
  * **returns** (Array) - The board
 
-`dice` can be an array of 6-character strings that represent dice. See `boggle.dice` for the included lists of dice. This module includes default dice sets for `size` equal to `4`, `5`, `6`. For other sizes, `dice` is required.`
+`dice` can be an Array of Arrays that represent dice. See `boggle.dice` for the included lists of dice. This module includes default dice sets for `size` equal to `4`, `5`, `6`. For other sizes, `dice` is required.
 
-Returns an Array of strings which are single characters. Note that you may need to use `boggle.charMap()` to determine what string of letters the character represents. The Array can be interpreted as either row-major or column-major order.
+```javascript
+// Create a 4x4 board using the Classic Boggle dice
+var classic = boggle.generate(4, boggle.dice['classic4']);
 
-### boggle.solve(board, size, dict)
+// Create a 7x7 board using two sets of the 6x6 dice
+// Every die has an equal chance of being used in the board
+var dice = boggle.dice[6].concat(boggle.dice[6]);
+var board = boggle.generate(7, dice);
+```
 
- * **board** (Array, String) - The representation of a board
- * **size** (Number) - The dimensions of the board
+Returns an Array of Strings that represent dice faces. The Array can be interpreted as either row-major or column-major order.
+
+### boggle.solve(board, dict)
+
+ * **board** (Array) - The board to solve
  * **dict** (Array) - Default *SOWPODS*. A dictionary to use
  * **returns** (Array) - All possible words with their corresponding sequences
 
-`board` is either an Array or String of characters of length `size * size`.
+`board` is an Array of Strings whose size is assumed to be `Math.sqrt(board.length)`.
 
-`dict` is an array of words in all-caps. The default dictionary used is Scrabble's SOWPODS dictionary.
+`dict` is an Array of Strings in all-caps already sorted in alphabetical order. The default dictionary used is Scrabble's SOWPODS dictionary.
 
-Returns an Array of objects with keys `word` and `sequence`. `word` is a String that is a valid word. `sequence` is an Array of Numbers that corresponds to the indices of `board` used to obtain `word`. This solver works on any sized board, and uses `boggle.charMap` to convert dice faces to words.
+Returns an Array of Objects with keys `word` and `sequence`. `word` is a String that exists in `dict`. `sequence` is an Array of Numbers that corresponds to the indices of `board` used to obtain `word`.
+
+This solver works by recursively walking around the board, keeping track of the sequence and input string of the path, as well as the sub-array of `dict` that begins with the input string. If the string is a full word in `dict`, add the string and sequence to the results, and continue walking. If the string matches no words in `dict`, stop walking.
 
 ### boggle.points(word, size)
 
@@ -92,10 +100,3 @@ Returns an Array of objects with keys `word` and `sequence`. `word` is a String 
  * `boggle.dice['4']` - The new 4x4 Boggle dice set
  * `boggle.dice['5']` - The 5x5 Boggle dice set
  * `boggle.dice['6']` - The 6x6 Boggle dice set
-
-### boggle.charMap(char)
-
- * **char** (String) - The character to map
- * **returns** (String) - The character's representation
-
-Every face of a die is represented by a single character, but may be interpreted as multiple characters. For example, `boggle.charMap('Q') === 'QU'`.
