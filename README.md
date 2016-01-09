@@ -17,7 +17,7 @@ var board = boggle.generate(5);
 //   'S', 'D', 'E', 'X', 'T' ]
 
 // Solve the above board
-var solution = boggle.solve(board, 5);
+var solution = boggle.solve(board);
 // [ { word: 'ET', sequence: [ 0, 5 ] },
 //   { word: 'ETH', sequence: [ 0, 5, 6 ] },
 //   { word: 'ETHIC', sequence: [ 0, 5, 6, 7, 8 ] },
