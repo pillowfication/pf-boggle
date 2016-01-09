@@ -84,7 +84,7 @@ Returns an Array of Strings that represent dice faces. The Array can be interpre
 
 Returns an Array of Objects with keys `word` and `sequence`. `word` is a String that exists in `dict`. `sequence` is an Array of Numbers that corresponds to the indices of `board` used to obtain `word`.
 
-This solver works by recursively walking around the board, keeping track of the sequence and input string of the path, as well as the sub-array of `dict` that begins with the input string. If the string is a full word in `dict`, add the string and sequence to the results, and continue walking. If the string matches no words in `dict`, stop walking.
+This solver works by making a trie structure out of `dict`, then recursively walking around the board, keeping track of the sequence and input string of the path, as well as the node of the trie associated with the input string. If the string is a full word in `dict`, add the string and sequence to the results, and continue walking. If the string matches no words in `dict`, stop walking.
 
 ### boggle.points(word, size)
 
