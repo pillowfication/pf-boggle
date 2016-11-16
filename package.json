@@ -20,11 +20,13 @@
     "build": "browserify examples/example.js -o examples/bundle.js"
   },
   "dependencies": {
-    "pf-sowpods": "1.0.6"
+    "lodash": "^4.16.6",
+    "pf-sowpods": "1.1.1"
   },
   "devDependencies": {
-    "eslint-config-pf": "*",
-    "jquery": "2.1.x"
+    "eslint": "^3.9.1",
+    "eslint-config-pf": "1.0.6",
+    "jquery": "^3.1.1"
   },
   "keywords": [
     "pillow",

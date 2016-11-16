@@ -1,5 +1,3 @@
-'use strict';
-
 module.exports = {
   'classic4': [
     ['A', 'A', 'C', 'I', 'O', 'T'], ['A', 'B', 'I', 'L', 'T', 'Y'], ['A', 'B', 'J', 'M', 'O', 'QU'],

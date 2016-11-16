@@ -6,10 +6,10 @@
 
 ```javascript
 // Require the module to use it.
-var boggle = require('pf-boggle');
+const boggle = require('pf-boggle');
 
 // Create a 5x5 board
-var board = boggle.generate(5);
+const board = boggle.generate(5);
 // [ 'E', 'O', 'T', 'I', 'I',
 //   'T', 'H', 'I', 'C', 'I',
 //   'C', 'N', 'N', 'G', 'F',
@@ -17,7 +17,7 @@ var board = boggle.generate(5);
 //   'S', 'D', 'E', 'X', 'T' ]
 
 // Solve the above board
-var solution = boggle.solve(board);
+const solution = boggle.solve(board);
 // [ { word: 'ET', sequence: [ 0, 5 ] },
 //   { word: 'ETH', sequence: [ 0, 5, 6 ] },
 //   { word: 'ETHIC', sequence: [ 0, 5, 6, 7, 8 ] },
@@ -27,21 +27,16 @@ var solution = boggle.solve(board);
 //   { word: 'TEX', sequence: [ 24, 19, 23 ] } ]
 
 // Find maximum score
-// Sort solutions
-solution = solution.sort(function(a, b) {
-  return a.word.localeCompare(b.word);
-});
-// Remove duplicates
-for (var i = solution.length-1, prev = ''; i >= 0; --i)
-  if (solution[i].word === prev)
-    solution.splice(i, 1);
-  else
-    prev = solution[i].word;
-// Add scores
-var maximum = solution.reduce(function(prev, curr) {
-  return prev + boggle.points(curr.word, 5);
-}, 0);
-// maximum == 226
+const _ = require('lodash');
+_.chain(solution)
+  .map('word')
+  .uniq()
+  .reduce(
+    (total, word) => total + boggle.points(word, 5),
+    0
+  )
+  .value();
+// 226
 ```
 
 See `examples/index.html` for the Boggle game. To build it, run
@@ -52,49 +47,129 @@ npm run build
 
 ## API
 
-### boggle.generate(size, dice)
+### `boggle.generate([size = 4], [dice = boggle.diceSets[size]])`
 
- * **size** (Number) - Default `4`. Size of the board
- * **dice** (Array) - *Optional*. An array of dice to use
- * **returns** (Array) - The board
+**Arguments**
+ 1. `[size = 4]` *(number)*: The size (number of rows and columns) of the board.
+ 2. `[dice = boggle.diceSets[size]]` *(Array)*: An array of dice to use.
 
-`dice` can be an Array of Arrays that represent dice. See `boggle.dice` for the included lists of dice. This module includes default dice sets for `size` equal to `4`, `5`, `6`. For other sizes, `dice` is required.
+**Returns**
+ * *(Array)*: An array of strings, each string representing a spot on the board. (Note: this is not a 2D array).
+
+`dice` can be an array of dice (each die being an array of strings). See `boggle.diceSets` for the included lists of dice. This module includes default dice sets for `size` equal to `4`, `5`, `6`. For other sizes, `dice` is required.
 
 ```javascript
 // Create a 4x4 board using the Classic Boggle dice
-var classic = boggle.generate(4, boggle.dice['classic4']);
+boggle.generate(4, boggle.dice['classic4']);
 
 // Create a 7x7 board using two sets of the 6x6 dice
 // Every die has an equal chance of being used in the board
-var dice = boggle.dice[6].concat(boggle.dice[6]);
-var board = boggle.generate(7, dice);
+boggle.generate(7, boggle.dice[6].concat(boggle.dice[6]));
 ```
 
-Returns an Array of Strings that represent dice faces. The Array can be interpreted as either row-major or column-major order.
+Since the `return` value is a flat array, it should be interpreted in row-major (or column-major) order to get the 2D board. If you want a 2D array, chunk the values (but `boggle.solve()` only works on the flat array).
 
-### boggle.solve(board, dict)
+```javascript
+const _ = require('lodash');
+const board = _.chunk(boggle.generate(5), 5);
+// [ [ 'E', 'O', 'T', 'I', 'I' ],
+//   [ 'T', 'H', 'I', 'C', 'I' ],
+//   [ 'C', 'N', 'N', 'G', 'F' ],
+//   [ 'O', 'T', 'W', 'D', 'E' ],
+//   [ 'S', 'D', 'E', 'X', 'T' ] ]
 
- * **board** (Array) - The board to solve
- * **dict** (Array) - Default *SOWPODS*. A dictionary to use
- * **returns** (Array) - All possible words with their corresponding sequences
+const solution = boggle.solve(_.flatten(board));
+```
 
-`board` is an Array of Strings whose size is assumed to be `Math.sqrt(board.length)`.
+### `boggle.solve(board, [dict = {SOWPODS}])`
 
-`dict` is an Array of Strings in all-caps already sorted in alphabetical order. The default dictionary used is Scrabble's SOWPODS dictionary.
+**Arguments**
+ 1. `board` *(Array)*: The board to solve.
+ 2. `[dict = {SOWPODS}]` *(Array)*: A list of words to consider.
 
-Returns an Array of Objects with keys `word` and `sequence`. `word` is a String that exists in `dict`. `sequence` is an Array of Numbers that corresponds to the indices of `board` used to obtain `word`.
+**Returns**
+ * *(Array)*: All possible words with their sequences on the board.
 
-This solver works by making a trie structure out of `dict`, then recursively walking around the board, keeping track of the sequence and input string of the path, as well as the node of the trie associated with the input string. If the string is a full word in `dict`, add the string and sequence to the results, and continue walking. If the string matches no words in `dict`, stop walking.
+`dict` is an array of strings (case insensitive). The default dictionary used is Scrabble's SOWPODS dictionary (see [pf-sowpods](https://www.npmjs.com/package/pf-sowpods)).
 
-### boggle.points(word, size)
+```javascript
+boggle.solve(['E', 'O', 'T', 'I', 'I',
+              'T', 'H', 'I', 'C', 'I',
+              'C', 'N', 'N', 'G', 'F',
+              'O', 'T', 'W', 'D', 'E',
+              'S', 'D', 'E', 'X', 'T' ]);
+// [ { word: 'ET', sequence: [ 0, 5 ] },
+//   { word: 'ETH', sequence: [ 0, 5, 6 ] },
+//   { word: 'ETHIC', sequence: [ 0, 5, 6, 7, 8 ] },
+//   ...
+//   { word: 'TEF', sequence: [ 24, 19, 14 ] },
+//   { word: 'TED', sequence: [ 24, 19, 18 ] },
+//   { word: 'TEX', sequence: [ 24, 19, 23 ] } ]
+```
 
- * **word** (String) - The word to score
- * **size** (Number) - Default `4`. Size of the board
- * **returns** (Number) - Score of the word
+Words can appear multiple times in the solution if there are multiple sequences on the board which create the same word. In the above example, `'TINTED'` appears 4 times.
 
-`size` must be one of `4`, `5`, `6`.
+```javascript
+{ word: 'TINTED', sequence: [ 2, 7, 11, 16, 22, 18 ] }
+{ word: 'TINTED', sequence: [ 2, 7, 11, 16, 22, 21 ] }
+{ word: 'TINTED', sequence: [ 2, 7, 12, 16, 22, 18 ] }
+{ word: 'TINTED', sequence: [ 2, 7, 12, 16, 22, 21 ] }
+```
 
-### boggle.dice (Array)
+Before solving occurs, a trie structure is made on dictionary. Since this operation is memoized, be careful when modifying your dictionary.
+
+```javascript
+const _ = require('lodash');
+const board = boggle.generate();
+
+const dictionary = require('pf-sowpods');
+const solution1 = boggle.solve(board, dictionary);
+_.find(solution1, sol => sol.word.length === 2);
+// -> { word: 'ES', sequence: [ 2, 5 ] }
+
+// Remove all 2-letter words from the dictionary since they award no points
+_.remove(dictionary, word => word.length === 2);
+
+// Resolve the board with the "new" dictionary
+const solution2 = boggle.solve(board, dictionary);
+_.find(solution2, sol => sol.word.length === 2);
+// -> { word: 'ES', sequence: [ 2, 5 ] }
+
+// Actually use the new dictionary
+const filteredDictionary = dictionary.slice();
+const solution3 = boggle.solve(board, filteredDictionary);
+_.find(solution3, sol => sol.word.length === 2);
+// -> undefined
+```
+
+### `boggle.points(word, [size = 4])`
+
+**Arguments**
+ 1. `word` *(String|number)*: The word to score.
+ 2. `[size = 4]` *(number)*: The size of board scoring takes place on.
+
+**Returns**
+ * *(number)*: Number of points awarded for the word.
+
+Since only the length of the word (and the size of the board) matters when scoring a word, `word` can also be passed as a number representing the length of a word.
+
+```javascript
+boggle.points('abcdef') === boggle.points(6); // true
+```
+
+Scoring is determined by the following table
+
+|  Word Length:  | 1 or 2 | 3 | 4 | 5 | 6 | 7 | 8  |         9+          |
+|:--------------:|:------:|:-:|:-:|:-:|:-:|:-:|:--:|:-------------------:|
+| Board Size = 4 |   0    | 1 | 1 | 2 | 3 | 5 | 11 |         11          |
+| Board Size = 5 |   0    | 0 | 1 | 2 | 3 | 5 | 11 |         11          |
+| Board Size = 6 |   0    | 0 | 1 | 2 | 3 | 5 | 11 | 2 points per letter |
+
+(See [Boggle 4x4](http://www.hasbro.com/common/instruct/boggle.pdf), [Boggle 5x5](http://www.hasbro.com/common/instruct/BigBoggle.PDF), [Boggle 6x6](https://winning-moves.com/images/SuperBigBoggleRules.pdf) instruction manuals)
+
+### boggle.diceSets
+
+*({Object})*: Included dice sets for use with `boggle.generate()`.
 
  * `boggle.dice['classic4']` - The classic 4x4 Boggle dice set
  * `boggle.dice['4']` - The new 4x4 Boggle dice set
