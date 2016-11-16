@@ -60,11 +60,11 @@ npm run build
 
 ```javascript
 // Create a 4x4 board using the Classic Boggle dice
-boggle.generate(4, boggle.dice['classic4']);
+boggle.generate(4, boggle.diceSets['classic4']);
 
 // Create a 7x7 board using two sets of the 6x6 dice
 // Every die has an equal chance of being used in the board
-boggle.generate(7, boggle.dice[6].concat(boggle.dice[6]));
+boggle.generate(7, boggle.diceSets[6].concat(boggle.diceSets[6]));
 ```
 
 Since the `return` value is a flat array, it should be interpreted in row-major (or column-major) order to get the 2D board. If you want a 2D array, chunk the values (but `boggle.solve()` only works on the flat array).
@@ -171,7 +171,9 @@ Scoring is determined by the following table
 
 *({Object})*: Included dice sets for use with `boggle.generate()`.
 
- * `boggle.dice['classic4']` - The classic 4x4 Boggle dice set
- * `boggle.dice['4']` - The new 4x4 Boggle dice set
- * `boggle.dice['5']` - The 5x5 Boggle dice set
- * `boggle.dice['6']` - The 6x6 Boggle dice set
+ * `boggle.diceSets['classic4']` - The classic 4x4 Boggle dice set
+ * `boggle.diceSets['4']` - The new 4x4 Boggle dice set
+ * `boggle.diceSets['5']` - The 5x5 Boggle dice set
+ * `boggle.diceSets['6']` - The 6x6 Boggle dice set
+
+In `boggle.diceSets['6']`, a `#` represents the "blank" or "blue-square" face.
