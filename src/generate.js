@@ -1,11 +1,26 @@
-const _ = require('lodash');
-const diceSets = require('./diceSets');
+const diceSets = require('./dice-sets')
 
-module.exports = function generate(size = 4, dice = diceSets[size]) {
-  const board = [];
+function shuffle (array) {
+  array = array.slice()
+  for (let counter = array.length; counter > 0;) {
+    const index = Math.random() * counter | 0
+    --counter
+    const temp = array[counter]
+    array[counter] = array[index]
+    array[index] = temp
+  }
+  return array
+}
 
-  for (const die of _.shuffle(dice))
-    board.push(die[_.random(0, 5)]);
+module.exports = function generate (size = 4, dice = diceSets[size]) {
+  size *= size
+  dice = shuffle(dice)
+  const board = []
 
-  return board;
-};
+  for (let index = 0; index < size; ++index) {
+    const die = dice[index]
+    board[index] = die[Math.random() * die.length | 0]
+  }
+
+  return board
+}

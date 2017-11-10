@@ -1,55 +1,78 @@
-const _ = require('lodash');
-const sowpods = require('pf-sowpods/src/sowpods');
-const EOW = sowpods.trieEOW;
+const sowpods = { trie: require('pf-sowpods/src/trie') }
 
-const getTrie = _.memoize((dictionary) => {
-  const trie = {};
-  for (const word of dictionary)
-    _.set(trie, (word.toUpperCase() + EOW).split(''), true);
-  return trie;
-});
+const trieCache = new Map()
+trieCache.set(sowpods, sowpods.trie)
 
-module.exports = function solve(board, dict) {
-  const size = Math.sqrt(board.length);
-  const trie = dict ? getTrie(dict) : sowpods.trie;
-  const results = [];
+function getTrie (dictionary) {
+  let trie = trieCache.get(dictionary)
+  if (trie) {
+    return trie
+  }
+  trie = {}
 
-  function check(index, trieNode, path, sequence) {
-    // Avoid retracing
-    if (sequence.indexOf(index) !== -1)
-      return;
-
-    const nodes = board[index]; // Note: A square on the board may represent
-                                //       multiple characters
-    // Crawl the trie
-    for (const node of nodes)
-      if (!(trieNode = trieNode[node]))
-        return;
-
-    // Update variables
-    path += nodes;
-    sequence = _.concat(sequence, index);
-
-    // Check if valid word
-    if (trieNode[EOW])
-      results.push({word: path, sequence: sequence});
-
-    // Recurse on neighboring cells
-    const up   = index/size|0, down  = up !== size-1,
-          left = index%size,   right = left !== size-1;
-
-    up && left &&    check(index-size-1, trieNode, path, sequence);
-    up &&            check(index-size,   trieNode, path, sequence);
-    up && right &&   check(index-size+1, trieNode, path, sequence);
-    left &&          check(index-1,      trieNode, path, sequence);
-    right &&         check(index+1,      trieNode, path, sequence);
-    down && left &&  check(index+size-1, trieNode, path, sequence);
-    down &&          check(index+size,   trieNode, path, sequence);
-    down && right && check(index+size+1, trieNode, path, sequence);
+  for (const word of dictionary) {
+    let node = trie
+    for (const letter of word.toUpperCase()) {
+      let nextNode = node[letter]
+      if (!nextNode) {
+        nextNode = node[letter] = {}
+      }
+      node = nextNode
+    }
+    node._ = true
   }
 
-  for (let i = 0, l = board.length; i < l; ++i)
-    check(i, trie, '', []);
+  trieCache.set(dictionary, trie)
+  return trie
+}
 
-  return results;
-};
+module.exports = function solve (board, dictionary = sowpods) {
+  const size = Math.sqrt(board.length)
+  const trie = getTrie(dictionary)
+  const results = []
+
+  function _solve (index, trieNode, path, sequence) {
+    // Avoid retracing
+    if (sequence.indexOf(index) !== -1) {
+      return
+    }
+
+    // Note: A square on the board may represent multiple characters
+    const nodes = board[index].toUpperCase()
+    // Crawl the trie
+    for (const node of nodes) {
+      if (!(trieNode = trieNode[node])) {
+        return
+      }
+    }
+
+    // Update variables
+    path += nodes
+    sequence = sequence.concat([ index ])
+
+    // Check if valid word
+    if (trieNode._) {
+      results.push({ word: path, sequence: sequence })
+    }
+
+    // Recurse on neighboring cells
+    const up = index / size | 0
+    const down = up !== size - 1
+    const left = index % size
+    const right = left !== size - 1
+
+    up && left && _solve(index - size - 1, trieNode, path, sequence)
+    up && _solve(index - size, trieNode, path, sequence)
+    up && right && _solve(index - size + 1, trieNode, path, sequence)
+    left && _solve(index - 1, trieNode, path, sequence)
+    right && _solve(index + 1, trieNode, path, sequence)
+    down && left && _solve(index + size - 1, trieNode, path, sequence)
+    down && _solve(index + size, trieNode, path, sequence)
+    down && right && _solve(index + size + 1, trieNode, path, sequence)
+  }
+
+  for (let i = 0, l = board.length; i < l; ++i) {
+    _solve(i, trie, '', [])
+  }
+  return results
+}

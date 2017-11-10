@@ -17,19 +17,15 @@
   },
   "main": "index.js",
   "scripts": {
-    "build": "browserify examples/example.js -o examples/bundle.js"
+    "test": "node_modules/standard/bin/cmd.js"
   },
   "dependencies": {
-    "lodash": "^4.16.6",
-    "pf-sowpods": "1.1.1"
+    "pf-sowpods": "^1.2.1"
   },
   "devDependencies": {
-    "eslint": "^3.9.1",
-    "eslint-config-pf": "1.0.6",
-    "jquery": "^3.1.1"
+    "standard": "^10.0.3"
   },
   "keywords": [
-    "pillow",
     "boggle"
   ],
   "license": "MIT"
