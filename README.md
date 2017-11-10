@@ -158,7 +158,7 @@ Scoring is determined by the following table
 
 (See [Boggle 4x4](http://www.hasbro.com/common/instruct/boggle.pdf), [Boggle 5x5](http://www.hasbro.com/common/instruct/BigBoggle.PDF), [Boggle 6x6](https://winning-moves.com/images/SuperBigBoggleRules.pdf) instruction manuals)
 
-### boggle.diceSets
+### `boggle.diceSets`
 
 *({Object})*: Included dice sets for use with `boggle.generate()`.
 
