@@ -150,11 +150,11 @@ boggle.points('abcdef') === boggle.points(6) // true
 
 Scoring is determined by the following table
 
-|  Word Length:  | 1 or 2 | 3 | 4 | 5 | 6 | 7 | 8  |         9+          |
-|:--------------:|:------:|:-:|:-:|:-:|:-:|:-:|:--:|:-------------------:|
-| Board Size = 4 |   0    | 1 | 1 | 2 | 3 | 5 | 11 |         11          |
-| Board Size = 5 |   0    | 0 | 1 | 2 | 3 | 5 | 11 |         11          |
-| Board Size = 6 |   0    | 0 | 1 | 2 | 3 | 5 | 11 | 2 points per letter |
+|  Word Length:  | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8  |         9+          |
+|:--------------:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:--:|:-------------------:|
+| Board Size = 4 | 0 | 0 | 1 | 1 | 2 | 3 | 5 | 11 |         11          |
+| Board Size = 5 | 0 | 0 | 0 | 1 | 2 | 3 | 5 | 11 |         11          |
+| Board Size = 6 | 0 | 0 | 0 | 1 | 2 | 3 | 5 | 11 | 2 points per letter |
 
 (See [Boggle 4x4](http://www.hasbro.com/common/instruct/boggle.pdf), [Boggle 5x5](http://www.hasbro.com/common/instruct/BigBoggle.PDF), [Boggle 6x6](https://winning-moves.com/images/SuperBigBoggleRules.pdf) instruction manuals)
 
