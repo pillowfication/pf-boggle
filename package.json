@@ -1,21 +1,21 @@
 {
   "name": "pf-boggle",
   "version": "1.2.1",
-  "description": "NxN Boggle generator and solver",
+  "description": "NxN Boggle generator and solver.",
+  "main": "index.js",
+  "homepage": "http://pf-n.co/github/pf-boggle",
   "author": {
     "name": "Markus Tran",
     "email": "thebluepillow@gmail.com",
     "url": "http://pillowfication.com"
   },
-  "homepage": "https://github.com/pillowfication/pf-boggle",
   "repository": {
     "type": "git",
-    "url": "git://github.com/pillowfication/pf-boggle.git"
+    "url": "https://github.com/pillowfication/pf-boggle.git"
   },
   "bugs": {
     "url": "https://github.com/pillowfication/pf-boggle/issues"
   },
-  "main": "index.js",
   "scripts": {
     "test": "node_modules/standard/bin/cmd.js"
   },

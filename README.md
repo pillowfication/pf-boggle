@@ -2,6 +2,8 @@
 
 **Boggle generator and solver** - A Boggle utility for 4x4, 5x5, and 6x6 boards that can be extended to NxN.
 
+http://pf-n.co/github/pf-boggle
+
 ## Examples
 
 ```javascript
@@ -41,7 +43,7 @@ _.chain(solution)
 ### `boggle.generate([size = 4], [dice = boggle.diceSets[size]])`
 
 **Arguments**
- 1. `[size = 4]` *(number)*: The size (number of rows and columns) of the board.
+ 1. `[size = 4]` *(Number)*: The size (number of rows/columns) of the board.
  2. `[dice = boggle.diceSets[size]]` *(Array)*: An array of dice to use.
 
 **Returns**
@@ -136,11 +138,11 @@ _.find(solution3, sol => sol.word.length === 2)
 ### `boggle.points(word, [size = 4])`
 
 **Arguments**
- 1. `word` *(String|number)*: The word to score.
- 2. `[size = 4]` *(number)*: The size of board scoring takes place on.
+ 1. `word` *(String|Number)*: The word to score.
+ 2. `[size = 4]` *(Number)*: The size of board scoring takes place on.
 
 **Returns**
- * *(number)*: Number of points awarded for the word.
+ * *(Number)*: Number of points awarded for the word.
 
 Since only the length of the word (and the size of the board) matters when scoring a word, `word` can also be passed as a number representing the length of a word.
 
