@@ -2,6 +2,7 @@ const diceSets = require('./dice-sets')
 
 function shuffle (array) {
   array = array.slice()
+
   for (let counter = array.length; counter > 0;) {
     const index = Math.random() * counter | 0
     --counter
@@ -9,6 +10,7 @@ function shuffle (array) {
     array[counter] = array[index]
     array[index] = temp
   }
+
   return array
 }
 
