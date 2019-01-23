@@ -38,6 +38,15 @@ _.chain(solution)
 // 226
 ```
 
+Since `boggle.solve()` imports the SOWPODS dictionary (which is huge), you can instead import just the base solver and initialize it with a dictionary of your choice. In this case, the `dictionary` argument is not optional.
+
+```javascript
+const solve = require('pf-boggle/src/base-solve')
+solve.initialize(myDictionary)
+
+solve(board, myDictionary)
+```
+
 ## API
 
 ### `boggle.generate([size = 4], [dice = boggle.diceSets[size]])`
@@ -74,11 +83,11 @@ const board = _.chunk(boggle.generate(5), 5)
 const solution = boggle.solve(_.flatten(board))
 ```
 
-### `boggle.solve(board, [dict = SOWPODS])`
+### `boggle.solve(board, [dictionary = SOWPODS])`
 
 **Arguments**
  1. `board` *(Array)*: The board to solve.
- 2. `[dict = SOWPODS]` *(Array)*: A list of words to consider.
+ 2. `[dictionary = SOWPODS]` *(Array)*: A list of words to consider.
 
 **Returns**
  * *(Array)*: All possible words with their sequences on the board.
