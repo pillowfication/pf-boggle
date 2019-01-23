@@ -1,6 +1,6 @@
 {
   "name": "pf-boggle",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "description": "NxN Boggle generator and solver.",
   "main": "index.js",
   "homepage": "http://pf-n.co/github/pf-boggle",
