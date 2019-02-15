@@ -47,6 +47,8 @@ solve.initialize(myDictionary)
 solve(board, myDictionary)
 ```
 
+`solve(board, dict)` will also invoke `solve.initialize(dict)` if it was not called previously.
+
 ## API
 
 ### `boggle.generate([size = 4], [dice = boggle.diceSets[size]])`
